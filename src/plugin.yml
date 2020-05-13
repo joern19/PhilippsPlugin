@@ -1,0 +1,26 @@
+name: PhilippsPlugin13
+version: 1.0.3
+api-version: 1.14
+author: Joern19
+main: minecraftserver.PhilippsPlugin
+commands:
+    TablistPrefix:
+    HI:
+    workbench:
+    hit:
+    home:
+    setHome:
+    rmHome:
+    setRang:
+    nick:
+    stone:
+    inv:
+    enderinv:
+    chestinv:
+    changeName:  
+    rucksack:
+    enderchest:
+    nick:
+    freeze:
+    msg:
+    disablePlugin:
