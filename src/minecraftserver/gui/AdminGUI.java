@@ -25,6 +25,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -599,7 +600,7 @@ public class AdminGUI {
                 void click(Player p, Boolean shift, Object[] infos) {
                     if (infos.length >= 1 && infos[0] instanceof Player) {
                         Player clicked = (Player) infos[0];
-                        //openHomeInventory(p, clicked);
+                        Page.getInstance(NAME_HOMES).openPage(p, new Object[]{clicked});
                     } else {
                         p.sendMessage("Message Info currupted...");
                     }
@@ -682,7 +683,6 @@ public class AdminGUI {
                         list.addLast(ci);
                         ci.setSlot(counter);
                         p.getOpenInventory().setItem(counter, ci.getItem());
-                        ci.onLoad(p); //theoretisch unnötig. Mache es trotzdem der vollständigkeit halber..
 
                         Page page = Page.getInstance(NAME_HOMES);
                         page.addClickListener(ci);
