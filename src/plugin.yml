@@ -1,5 +1,5 @@
-name: PhilippsPlugin13
-version: 1.0.3
+name: PhilippsPlugin
+version: 1.9.2
 api-version: 1.14
 author: Joern19
 main: minecraftserver.PhilippsPlugin
@@ -24,3 +24,10 @@ commands:
     freeze:
     msg:
     disablePlugin:
+permissions:
+    philippsPlugin.increasedFlySpeed:
+        description: Allows Increased Flyspeed
+        default: true
+    philippsPlugin.colorCode:
+        description: Allows the use of colorCode with &
+        default: op

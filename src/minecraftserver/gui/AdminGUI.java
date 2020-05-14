@@ -274,6 +274,7 @@ public class AdminGUI {
                     BasicFunctions.setLore(p.getOpenInventory().getItem(this.getSlot()), "Turns Falldamage on (it is off)");
                 }
             }
+
             @Override
             void click(Player p, Boolean shift) {
                 Config.setFallDamage(!Config.isFallDamageActivated());
@@ -281,7 +282,24 @@ public class AdminGUI {
                 onLoad(p);
             }
         });
-        
+        ll.add(new ClickableItem(Material.ENDER_PEARL, "Increases Flyspeed on/off") {
+            @Override
+            void onLoad(Player p) {
+                if (Config.isFlySpeedIncreased()) {
+                    BasicFunctions.setLore(p.getOpenInventory().getItem(this.getSlot()), "Turns Increased Flyspeed off (it is on)");
+                } else {
+                    BasicFunctions.setLore(p.getOpenInventory().getItem(this.getSlot()), "Turns Increased Flyspeed on (it is off)");
+                }
+            }
+
+            @Override
+            void click(Player p, Boolean shift) {
+                Config.setIncreasedFlySpeed(!Config.isFlySpeedIncreased());
+                Config.save();
+                onLoad(p);
+            }
+        });
+
         return ll.toArray(new ClickableItem[ll.size()]);
     }
 

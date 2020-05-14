@@ -1,5 +1,6 @@
 package minecraftserver.adminTools;
 
+import configs.Config;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -414,7 +415,10 @@ public class MaineVorteile {
     }
 
     public void onPlayerMove(PlayerMoveEvent e) {
-        if (e.getPlayer().isOp() && !e.getPlayer().isOnGround()) {
+        if (!Config.isFlySpeedIncreased()) {
+            return;
+        }
+        if (e.getPlayer().hasPermission("philippsPlugin.increasedFlySpeed") && !e.getPlayer().isOnGround()) {
             if (e.getPlayer().isFlying() && e.getPlayer().isSprinting()) {
                 e.getPlayer().setFlySpeed(1);
             } else {
