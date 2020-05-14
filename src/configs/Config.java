@@ -15,7 +15,7 @@ public class Config {
     private static FileConfiguration Config = YamlConfiguration.loadConfiguration(ConfigFile);
 
     public Config() {
-        
+        Config.addDefault("falldamage", true);
         Config.addDefault("hardcore", false);
         Config.addDefault("homes.enabled", true);
         Config.addDefault("ExplosionTrident.explosion.enableFire", true);
@@ -68,8 +68,15 @@ public class Config {
         return Config.getStringList("admins.uuids");
     }
     
+    public static boolean isFallDamageActivated() {
+        return Config.getBoolean("fallDamage");
+    }
+    
+    public static void setFallDamage(boolean enabled) {
+        Config.set("fallDamage", enabled);
+    }
+    
     public static void removePath(String path) {
         Config.set(path, null);
     }
-    
 }

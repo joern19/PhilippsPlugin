@@ -26,9 +26,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -46,7 +46,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 import utilities.EventManager;
 
 public class PhilippsPlugin extends JavaPlugin implements Listener {
@@ -381,19 +380,18 @@ public class PhilippsPlugin extends JavaPlugin implements Listener {
         e.setJoinMessage("");
         //InvisableToSomeone.onJoin(e);
     }
-
+    
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        maineVorteile.onEntityDamageByEntity(e);
+    }
+    
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
         if (freezes.contains(e.getPlayer().getName())) {
             e.setCancelled(true);
         }
         maineVorteile.onPlayerMove(e);
-    }
-
-    @EventHandler
-    public void onEntityExplode(EntityExplodeEvent e) {
-        //e.getEntity().remove();
-        //e.setCancelled(true);
     }
 
     @EventHandler
@@ -457,7 +455,7 @@ public class PhilippsPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
-            if (e.getCause() == DamageCause.FALL) {
+            if (e.getCause() == DamageCause.FALL && !Config.isFallDamageActivated()) {
                 e.setCancelled(true);
             }
         }

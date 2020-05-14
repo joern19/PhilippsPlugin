@@ -265,6 +265,23 @@ public class AdminGUI {
                 ExplosionTrident.setExplosionSize((double) newSize);
             }
         });
+        ll.add(new ClickableItem(Material.FEATHER, "Turns Falldamage on/off") {
+            @Override
+            void onLoad(Player p) {
+                if (Config.isFallDamageActivated()) {
+                    BasicFunctions.setLore(p.getOpenInventory().getItem(this.getSlot()), "Turns Falldamage off (it is on)");
+                } else {
+                    BasicFunctions.setLore(p.getOpenInventory().getItem(this.getSlot()), "Turns Falldamage on (it is off)");
+                }
+            }
+            @Override
+            void click(Player p, Boolean shift) {
+                Config.setFallDamage(!Config.isFallDamageActivated());
+                Config.save();
+                onLoad(p);
+            }
+        });
+        
         return ll.toArray(new ClickableItem[ll.size()]);
     }
 
@@ -775,7 +792,7 @@ public class AdminGUI {
     private ClickableItem[] getPlayers() {
         final LinkedList<ClickableItem> list = new LinkedList<>();
 
-        list.add(new ClickableItem(Material.GRASS_BLOCK, "Allgeimeine Optionen") {
+        list.add(new ClickableItem(Material.GRASS_BLOCK, "Allgemeine Optionen") {
             @Override
             public void click(Player p, Boolean shift) {
                 Page.getInstance(NAME_WORLD_OPTIONS).openPage(p);
