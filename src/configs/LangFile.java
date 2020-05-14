@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
- * This is The Config File where all Respond Messages come from.
+ * This is The configuration File where all Respond Messages are saved.
  * @author joern
  */
 public class LangFile {
@@ -34,7 +34,7 @@ public class LangFile {
         Config.addDefault("teleported", "§aYou were Teleported.");
         Config.addDefault("notAnInteger", "§c'{text}'Is not an Integer.");
         Config.addDefault("homeDeleted", "§cHome {homeNumber} deleted.");
-        Config.addDefault("homeSet", "§cHome {homeNumber} set.");
+        Config.addDefault("homeSet", "§aHome {homeNumber} set.");
         
         Config.options().copyDefaults(true);
         save();

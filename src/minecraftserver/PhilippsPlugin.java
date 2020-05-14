@@ -1,6 +1,5 @@
 package minecraftserver;
 
-//import philippsplugin.Home;
 import utilities.Update;
 import configs.Homes;
 import configs.Config;
@@ -447,7 +446,7 @@ public class PhilippsPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         nick.onChat(e);
-        if (e.getPlayer().hasPermission("LOL")) {
+        if (e.getPlayer().hasPermission("colorCode")) {
             e.setMessage(e.getMessage().replace("&", "§"));
         }
     }

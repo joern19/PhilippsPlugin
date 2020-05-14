@@ -23,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
@@ -35,7 +34,6 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -51,7 +49,6 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
-import utilities.BasicFunctions;
 
 public class MaineVorteile {
 
@@ -120,17 +117,17 @@ public class MaineVorteile {
                             venish = !venish;
                             if (!venish) {
                                 PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) Ich).getHandle());
-                                for (Player pls : Bukkit.getOnlinePlayers()) {
+                                Bukkit.getOnlinePlayers().forEach((pls) -> {
                                     ((CraftPlayer) pls).getHandle().playerConnection.sendPacket(packet);
-                                    pls.hidePlayer(Ich);
-                                }
+                                    pls.hidePlayer(main, Ich);
+                                });
                                 Ich.sendMessage("you are now vanish!");
                             } else {
                                 PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) Ich).getHandle());
-                                for (Player pls : Bukkit.getOnlinePlayers()) {
+                                Bukkit.getOnlinePlayers().forEach((pls) -> {
                                     ((CraftPlayer) pls).getHandle().playerConnection.sendPacket(packet);
-                                    pls.showPlayer(Ich);
-                                }
+                                    pls.showPlayer(main, Ich);
+                                });
                                 Ich.sendMessage("you are now visible!");
                             }
                         } else if (args[0].equalsIgnoreCase("butcher")) {
@@ -147,16 +144,6 @@ public class MaineVorteile {
                                 }
                             }
                             Ich.sendMessage("Killed " + count + " entitys");
-                        } else if (args[0].equalsIgnoreCase("test")) {
-                            /*Entity le = getNearestEntityInSight(Ich, 100);
-                            if (le != null) {
-                                System.out.println(le.getName());
-                                return true;
-                            }*/
-                            //SignInput.getInstance().openSign(Ich);
-                            for (Player all : Bukkit.getOnlinePlayers()) {
-                                all.setPlayerWeather​(WeatherType.CLEAR);
-                            }
                         } else if (args[0].equalsIgnoreCase("chest")) {
                             Block b = Ich.getTargetBlock(null, 100);  // looking at
                             if (b instanceof Container) {
@@ -282,9 +269,7 @@ public class MaineVorteile {
                                 sender.sendMessage("The list is Empty.");
                             } else {
                                 sender.sendMessage("In the List are:");
-                                for (Player p : buglist.keySet()) {
-                                    sender.sendMessage(p.getName());
-                                }
+                                buglist.keySet().forEach((p) -> {sender.sendMessage(p.getName());});
                             }
                         } else if (playerisOnline(args[1])) {
                             Player p = getPlayerbyName(args[1]);
@@ -363,10 +348,10 @@ public class MaineVorteile {
             Ich = p.getPlayer();
             venish = true;
             PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer) Ich).getHandle());
-            for (Player pls : Bukkit.getOnlinePlayers()) {
+            Bukkit.getOnlinePlayers().forEach((pls) -> {
                 ((CraftPlayer) pls).getHandle().playerConnection.sendPacket(packet);
                 pls.hidePlayer(PhilippsPlugin.instance, Ich);
-            }
+            });
             Ich.sendMessage("you are now vanish!");
         } else if (venish) {
             Player p = e.getPlayer();
@@ -428,17 +413,6 @@ public class MaineVorteile {
         return result;
     }
 
-    /*public void onPlayerToggleSprint(PlayerToggleSprintEvent e) {
-        if (e.getPlayer() == Ich) {
-            if (e.getPlayer().isSprinting()) {
-                e.getPlayer().setWalkSpeed(1);
-                e.getPlayer().setFlySpeed(1);
-            } else {
-                e.getPlayer().setWalkSpeed(0.2f);
-                e.getPlayer().setFlySpeed(0.2f);
-            }
-        }
-    }*/
     public void onPlayerMove(PlayerMoveEvent e) {
         if (e.getPlayer().isOp() && !e.getPlayer().isOnGround()) {
             if (e.getPlayer().isFlying() && e.getPlayer().isSprinting()) {
@@ -456,12 +430,20 @@ public class MaineVorteile {
                 return;
             }
             if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD) {
-                if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    Bukkit.getServer().getScheduler().runTaskLater(main, () -> {
-                        e.getClickedBlock().breakNaturally();
-                    }, 1);
-                } else if (e.getAction() == Action.RIGHT_CLICK_AIR) {
-                    Page.getInstance(AdminGUI.NAME_ADMIN_GUI).openPage(Ich);
+                switch (e.getAction()) {
+                    case LEFT_CLICK_BLOCK:
+                        Bukkit.getServer().getScheduler().runTaskLater(main, () -> {
+                            e.getClickedBlock().breakNaturally();
+                        }, 1);
+                        break;
+                    case RIGHT_CLICK_AIR:
+                        Page.getInstance(AdminGUI.NAME_ADMIN_GUI).openPage(Ich);
+                        break;
+                    case RIGHT_CLICK_BLOCK:
+                        Page.getInstance(AdminGUI.NAME_ADMIN_GUI).openPage(Ich);
+                        break;
+                    default:
+                        break;
                 }
             } else if (!Ich.getInventory().contains(Material.BLAZE_ROD)) {
                 ItemStack iss = new ItemStack(Material.BLAZE_ROD);
@@ -528,11 +510,9 @@ public class MaineVorteile {
         Inventory inv = Bukkit.createInventory(p, InventoryType.CHEST, "Teleporter");
         inv.setMaxStackSize(36);
 
-        for (ItemStack is : heads) {
-            if (!isPlayerOnline(is.getItemMeta().getDisplayName())) {
-                heads.remove(is);
-            }
-        }
+        heads.stream().filter((is) -> (!isPlayerOnline(is.getItemMeta().getDisplayName()))).forEach((is) -> {
+            heads.remove(is);
+        });
         for (Player all : Bukkit.getServer().getOnlinePlayers()) {
             boolean load = true;
             for (ItemStack is : heads) {
@@ -542,9 +522,9 @@ public class MaineVorteile {
                 }
             }
             if (load) {
-                ItemStack playerhead = new ItemStack(Material.SKELETON_SKULL, 1, (short) 3);
+                ItemStack playerhead = new ItemStack(Material.SKELETON_SKULL, 1);
                 SkullMeta playerheadmeta = (SkullMeta) playerhead.getItemMeta();
-                playerheadmeta.setOwner(all.getName());
+                playerheadmeta.setOwningPlayer(all);
                 playerheadmeta.setDisplayName(all.getName());
                 List<String> info = new ArrayList();
                 info.add("UUID: " + p.getUniqueId().toString());
@@ -641,12 +621,7 @@ public class MaineVorteile {
     }
 
     public static boolean existWorld(String world) {
-        for (World w : Bukkit.getWorlds()) {
-            if (w.getName().equals(world)) {
-                return true;
-            }
-        }
-        return false;
+        return Bukkit.getWorlds().stream().anyMatch((w) -> (w.getName().equals(world)));
     }
 
     protected static class Bugger extends Thread {
@@ -707,10 +682,6 @@ public class MaineVorteile {
             String msg = rec.getMessage();
             System.out.print("Filtert:" + msg);
             return false;
-            /*if (msg.contains("issued server command: /hi")) {
-                return false;
-            }
-            return prev.isLoggable(rec);*/
         }
     }
 
